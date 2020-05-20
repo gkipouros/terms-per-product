@@ -116,7 +116,7 @@ if ( ! class_exists( 'Terms_Conditions_Per_Product' ) ) {
 		 */
         public function woocommerce_product_custom_fields () {
             global $woocommerce, $post;
-			echo "<pre>" . print_r( $this->meta_key, 1 )."</pre>";exit;
+			
             ?>
             <div class="product_custom_field">
                 <?php
