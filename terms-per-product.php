@@ -13,7 +13,7 @@
  * Plugin URI:        https://2squared.io
  * Description:       This plugin allows you to set custom Terms and Conditions per WooCommerce product.
  * Version:           1.0.0
- * Author:            Giannis Kipouros for 2Squared.io
+ * Author:            2Squared.io
  * Author URI:        https://2squared.io/giannis-kipouros
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
@@ -30,7 +30,7 @@ if ( ! defined( 'PLUGIN_VERSION' ) ) {
 	/**
 	 * The version of the plugin.
 	 */
-	define( 'PLUGIN_VERSION', '1.0.5' );
+	define( 'PLUGIN_VERSION', '1.0.0' );
 }
 
 if ( ! defined( 'PLUGIN_PATH' ) ) {
