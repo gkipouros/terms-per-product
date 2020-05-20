@@ -21,6 +21,13 @@ if ( ! class_exists( 'Terms_Conditions_Per_Product' ) ) {
 	class Terms_Conditions_Per_Product {
 
 		/**
+		 * Constants
+		*/
+
+        const META_KEY = '_custom_product_terms_url';
+
+
+		/**
 		 * Constructor for class.
 		 */
 		public function __construct() {
@@ -43,6 +50,23 @@ if ( ! class_exists( 'Terms_Conditions_Per_Product' ) ) {
 
 			// Enqueue Back end scripts
 			add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_style_scripts' ), 100 );
+
+			// The code for displaying WooCommerce Product Custom Fields
+            add_action( 'woocommerce_product_options_general_product_data',
+                array( $this, 'woocommerce_product_custom_fields' ) );
+
+            // The following code Saves  WooCommerce Product Custom Fields
+            add_action( 'woocommerce_process_product_meta',
+                array( $this, 'woocommerce_product_custom_fields_save' ) );
+
+
+            // Add product specific Terms and Conditions to WC Checkout
+            add_action( 'woocommerce_review_order_before_submit',
+                array( $this, 'add_checkout_per_product_terms' ) );
+
+            // Notify user if terms are not selected
+            add_action( 'woocommerce_checkout_process',
+                array( $this, 'action_not_approved_terms' ), 20 );
 
 		}
 
@@ -95,6 +119,112 @@ if ( ! class_exists( 'Terms_Conditions_Per_Product' ) ) {
 		public function admin_enqueue_style_scripts() {
 
 		}
+
+
+		/**
+		 * Add custom fields to WC product
+		 *
+		 */
+        public function woocommerce_product_custom_fields () {
+            global $woocommerce, $post;
+            ?>
+            <div class="product_custom_field">
+                <?php
+                    // Custom Product Text Field
+                    woocommerce_wp_text_input(
+                        array(
+                            'id'            => SELF::META_KEY,
+                            'placeholder'   => 'Add the URL of the terms page.',
+                            'label'         => __( 'Custom Terms and Condition Page (URL)', 'woocommerce'),
+                            'desc_tip'      => 'true'
+                        )
+                    );
+                ?>
+            </div>
+        <?php
+        }
+
+		/**
+		 * Save fields
+		 *
+		 */
+        public function woocommerce_product_custom_fields_save( $post_id ) {
+
+            // Custom Product Text Field
+            $woocommerce_custom_product_text_field = $_POST[ SELF::META_KEY ];
+
+			// Sanitize input
+            $link = filter_var( $woocommerce_custom_product_text_field, FILTER_SANITIZE_URL );
+
+			// Add post meta
+            update_post_meta( $post_id, SELF::META_KEY, esc_attr( $link ) );
+
+        }
+
+		/**
+		 * Add product Terms and Conditions in checkout page
+		 *
+		 */
+        public function add_checkout_per_product_terms( ) {
+
+            // Loop through each cart item
+            foreach( WC()->cart->get_cart() as $cart_item ){
+
+                $product_id = $cart_item['product_id'];
+
+                $product_terms_url = trim( get_post_meta( $product_id, SELF::META_KEY, true ));
+
+                if ( ! empty( $product_terms_url ) ) {
+                    ?>
+                    <div class="extra-terms">
+                        <p class="form-row terms wc-terms-and-conditions form-row validate-required">
+                            <label class="woocommerce-form__label woocommerce-form__label-for-checkbox checkbox">
+                                <input type="checkbox" class="woocommerce-form__input woocommerce-form__input-checkbox input-checkbox" name="terms-<?php echo $product_id; ?>" <?php checked( apply_filters( 'woocommerce_terms_is_checked_default', isset( $_POST['terms-' . $product_id ] ) ), true ); ?> id="terms-<?php echo $product_id; ?>">
+
+                                    <span>
+                                        <a href="<?php echo esc_html( $product_terms_url ); ?>" target="_blank">
+											<?php _e('Terms and conditions', 'terms-per-product');?>
+
+                                        </a>
+										<?php echo " of <b>" . get_the_title( $product_id ) ." </b>"; ?>
+									</span>
+
+                                    <span class="required">*</span>
+
+                            </label>
+                        </p>
+                        <div class="clearfix"></div>
+                    </div>
+                    <?php
+                }
+
+            }
+        }
+
+		/**
+		 * Notify user if they do not selected the terms checkbox
+		 *
+		 */
+        public function action_not_approved_terms() {
+
+            // Loop through each cart item
+            foreach( WC()->cart->get_cart() as $cart_item ){
+
+				$product_id = $cart_item['product_id'];
+
+                $product_terms_url = trim( get_post_meta( $product_id, SELF::META_KEY, true ) );
+
+                // Check if the product has a custom terms page set
+                if ( ! empty( $product_terms_url ) && ! isset( $_POST['terms-' . $product_id] ) ) {
+					$error_text = __( 'Please <strong>read and accept</strong> the Terms and Conditions of', 'terms-per-product' )." ";
+					$error_text .= "<b>" . get_the_title( $product_id ) ."</b>.";
+					wc_add_notice( $error_text, 'error' );
+
+                }
+
+            }
+        }
+
 	}
 
 	new Terms_Conditions_Per_Product();
