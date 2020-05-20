@@ -20,17 +20,15 @@ if ( ! class_exists( 'Terms_Conditions_Per_Product' ) ) {
 	 */
 	class Terms_Conditions_Per_Product {
 
-		/**
-		 * Constants
-		*/
-
-        const META_KEY = '_custom_product_terms_url';
+		public $meta_key;
 
 
 		/**
 		 * Constructor for class.
 		 */
 		public function __construct() {
+
+			$this->meta_key = apply_filters( 'gkco_custom_terms_meta_key', '_custom_product_terms_url');
 
 			$files = array();
 
@@ -98,15 +96,6 @@ if ( ! class_exists( 'Terms_Conditions_Per_Product' ) ) {
 				true
 			);
 
-
-	        // Provide a global object to our JS file containing the AJAX url and security nonce
-	        wp_localize_script( 'terms-per-product-custom-script', 'ajaxObject',
-	            array(
-	                'ajax_url'      => admin_url('admin-ajax.php'),
-	                'ajax_nonce'    => wp_create_nonce('ajax_nonce'),
-					//'plugin_url'	=> plugins_url('/', __FILE__),
-	            )
-	        );
 	        wp_enqueue_script( 'terms-per-product-custom-script');
 
 		}
@@ -127,18 +116,22 @@ if ( ! class_exists( 'Terms_Conditions_Per_Product' ) ) {
 		 */
         public function woocommerce_product_custom_fields () {
             global $woocommerce, $post;
+			echo "<pre>" . print_r( $this->meta_key, 1 )."</pre>";exit;
             ?>
             <div class="product_custom_field">
                 <?php
+					$args = array(
+						'id'            => $this->meta_key,
+						'placeholder'   => 'Add the URL of the terms page.',
+						'label'         => __( 'Custom Terms and Condition Page (URL)', 'woocommerce'),
+						'desc_tip'      => 'true'
+					);
+
+					// Apply filters
+					$args = apply_filters( 'gkco_custom_product_terms_input_args', $args );
+
                     // Custom Product Text Field
-                    woocommerce_wp_text_input(
-                        array(
-                            'id'            => SELF::META_KEY,
-                            'placeholder'   => 'Add the URL of the terms page.',
-                            'label'         => __( 'Custom Terms and Condition Page (URL)', 'woocommerce'),
-                            'desc_tip'      => 'true'
-                        )
-                    );
+                    woocommerce_wp_text_input( $args );
                 ?>
             </div>
         <?php
@@ -151,13 +144,16 @@ if ( ! class_exists( 'Terms_Conditions_Per_Product' ) ) {
         public function woocommerce_product_custom_fields_save( $post_id ) {
 
             // Custom Product Text Field
-            $woocommerce_custom_product_text_field = $_POST[ SELF::META_KEY ];
+            $woocommerce_custom_product_text_field = $_POST[ $this->meta_key ];
 
 			// Sanitize input
             $link = filter_var( $woocommerce_custom_product_text_field, FILTER_SANITIZE_URL );
 
+			// Run this action before saving the link
+			do_action( 'gkco_before_save_custom_product_terms_link', $link, $woocommerce_custom_product_text_field );
+
 			// Add post meta
-            update_post_meta( $post_id, SELF::META_KEY, esc_attr( $link ) );
+            update_post_meta( $post_id, $this->meta_key, esc_attr( $link ) );
 
         }
 
@@ -172,7 +168,7 @@ if ( ! class_exists( 'Terms_Conditions_Per_Product' ) ) {
 
                 $product_id = $cart_item['product_id'];
 
-                $product_terms_url = trim( get_post_meta( $product_id, SELF::META_KEY, true ));
+                $product_terms_url = trim( get_post_meta( $product_id, $this->meta_key, true ));
 
                 if ( ! empty( $product_terms_url ) ) {
                     ?>
@@ -181,12 +177,32 @@ if ( ! class_exists( 'Terms_Conditions_Per_Product' ) ) {
                             <label class="woocommerce-form__label woocommerce-form__label-for-checkbox checkbox">
                                 <input type="checkbox" class="woocommerce-form__input woocommerce-form__input-checkbox input-checkbox" name="terms-<?php echo $product_id; ?>" <?php checked( apply_filters( 'woocommerce_terms_is_checked_default', isset( $_POST['terms-' . $product_id ] ) ), true ); ?> id="terms-<?php echo $product_id; ?>">
 
-                                    <span>
-                                        <a href="<?php echo esc_html( $product_terms_url ); ?>" target="_blank">
-											<?php _e('Terms and conditions', 'terms-per-product');?>
+									<?php
+										$terms_text = '<a href="[TERMS_URL]" target="_blank">[TERMS]</a> of <strong>[PRODUCT_TITLE]</strong>';
 
-                                        </a>
-										<?php echo " of <b>" . get_the_title( $product_id ) ." </b>"; ?>
+										$terms_text = apply_filters(
+											'gkco_custom_product_terms_text',
+											$terms_text,
+											$product_terms_url,
+											$product_id
+										);
+
+										$search = array(
+											'[TERMS_URL]',
+											'[TERMS]',
+											'[PRODUCT_TITLE]'
+										);
+
+										$replace = array(
+											esc_html( $product_terms_url ),
+											__('Terms and Conditions', 'terms-per-product'),
+											get_the_title( $product_id ),
+										);
+
+										$terms_html = str_replace( $search, $replace, $terms_text );
+									?>
+                                    <span>
+                                        <?php echo $terms_html;  ?>
 									</span>
 
                                     <span class="required">*</span>
@@ -212,12 +228,17 @@ if ( ! class_exists( 'Terms_Conditions_Per_Product' ) ) {
 
 				$product_id = $cart_item['product_id'];
 
-                $product_terms_url = trim( get_post_meta( $product_id, SELF::META_KEY, true ) );
+                $product_terms_url = trim( get_post_meta( $product_id, $this->meta_key, true ) );
 
                 // Check if the product has a custom terms page set
                 if ( ! empty( $product_terms_url ) && ! isset( $_POST['terms-' . $product_id] ) ) {
 					$error_text = __( 'Please <strong>read and accept</strong> the Terms and Conditions of', 'terms-per-product' )." ";
 					$error_text .= "<b>" . get_the_title( $product_id ) ."</b>.";
+
+					// Add filter for error notice
+					$error_text = apply_filters( 'gkco_custom_product_terms_error_notice', $error_text, $product_id );
+
+					// Display notice
 					wc_add_notice( $error_text, 'error' );
 
                 }

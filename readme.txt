@@ -1,18 +1,26 @@
 === Terms & Conditions Per Product ===
 Contributors: giannis4
-Tags: terms, conditions, wc, product
-Requires at least: 5.3
-Tested up to: 5.3
-Requires PHP: 7.0
+Tags: terms, conditions, WC, product
+Requires at least: 5.0
+Tested up to: 5.4.1
+Requires PHP: 5.6
 Stable tag: trunk
+Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=J7GGEGDD4XV5
+Author: Giannis Kipouros
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-This plugin allows you to set custon Terms and Conditions per WooCommerce product.
+This plugin allows you to set custom Terms and Conditions per WooCommerce product.
 
 == Description ==
 
-This plugin allows you to set custon Terms and Conditions per WooCommerce product.
+This plugin allows you to set custom Terms and Conditions per WooCommerce product. It works by:
+1. Adding a custom field on every WooCommerce product's page.
+2. When this custom field is filled, an extra checkbox is displayed in the WooCommerce checkout form that the user needs to select.
+3. This extra checkout checkbox includes a link to the Terms and Conditions page added to the product's administration page.
+
+Filters and Actions:
+There are multiple hooks that will allow you to customize the plugin even further. 
 
 == Installation ==
 

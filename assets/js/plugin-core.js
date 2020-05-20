@@ -4,7 +4,7 @@
 
 /**
  * @summary     Terms & Conditions Per Product
- * @description This plugin allows you to set custon Terms and Conditions per WooCommerce product.
+ * @description This plugin allows you to set custom Terms and Conditions per WooCommerce product.
  * @version     1.0.0
  * @file        terms-per-product
  * @author      Giannis Kipouros
