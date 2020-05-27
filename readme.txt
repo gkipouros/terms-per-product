@@ -20,7 +20,7 @@ This plugin allows you to set custom Terms and Conditions per WooCommerce produc
 3. This extra checkout checkbox includes a link to the Terms and Conditions page added to the product's administration page.
 
 Filters and Actions:
-There are multiple hooks that will allow you to customize the plugin even further. 
+There are multiple hooks that will allow you to customize the plugin even further.
 
 == Installation ==
 
@@ -33,7 +33,9 @@ There are multiple hooks that will allow you to customize the plugin even furthe
 There are no FAQ just yet.
 
 == Screenshots ==
-
+1. Extra custom field on every WooCommerce product.
+2. The added Terms and Condition checkbox on the Checkout page.
+3. The error notice if the checkbox is not selected.
 
 == Changelog ==
 

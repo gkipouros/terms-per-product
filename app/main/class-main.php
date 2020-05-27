@@ -13,12 +13,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // If class is exist, then don't execute this.
-if ( ! class_exists( 'Terms_Conditions_Per_Product' ) ) {
+if ( ! class_exists( 'TACPP4_Terms_Conditions_Per_Product' ) ) {
 
 	/**
 	 * Class for transxen core.
 	 */
-	class Terms_Conditions_Per_Product {
+	class TACPP4_Terms_Conditions_Per_Product {
 
 		public $meta_key;
 
@@ -30,21 +30,8 @@ if ( ! class_exists( 'Terms_Conditions_Per_Product' ) ) {
 
 			$this->meta_key = apply_filters( 'gkco_custom_terms_meta_key', '_custom_product_terms_url');
 
-			$files = array();
-
-			if ( ! empty( $files ) ) {
-
-				foreach ( $files as $file ) {
-
-					// Include functions file.
-					require TXC_PATH . $file . '.php';
-
-				}
-			}
-
 			// Enqueue front-end scripts
 			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_style_scripts' ), 100 );
-
 
 			// Enqueue Back end scripts
 			add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_style_scripts' ), 100 );
@@ -80,19 +67,19 @@ if ( ! class_exists( 'Terms_Conditions_Per_Product' ) ) {
 			// Custom plugin script.
 			wp_enqueue_style(
 				'terms-per-product-core-style',
-				PLUGIN_URL . 'assets/css/plugin-core.css',
+				TACPP4_PLUGIN_URL . 'assets/css/plugin-core.css',
 				'',
-				PLUGIN_VERSION
+				TACPP4_PLUGIN_VERSION
 			);
 
 			// Register plugin's JS script
 			wp_register_script(
 				'terms-per-product-custom-script',
-				PLUGIN_URL . 'assets/js/plugin-core.js',
+				TACPP4_PLUGIN_URL . 'assets/js/plugin-core.js',
 				array(
 					'jquery',
 				),
-				PLUGIN_VERSION,
+				TACPP4_PLUGIN_VERSION,
 				true
 			);
 
@@ -116,7 +103,7 @@ if ( ! class_exists( 'Terms_Conditions_Per_Product' ) ) {
 		 */
         public function woocommerce_product_custom_fields () {
             global $woocommerce, $post;
-			
+
             ?>
             <div class="product_custom_field">
                 <?php
@@ -248,5 +235,5 @@ if ( ! class_exists( 'Terms_Conditions_Per_Product' ) ) {
 
 	}
 
-	new Terms_Conditions_Per_Product();
+	new TACPP4_Terms_Conditions_Per_Product();
 }

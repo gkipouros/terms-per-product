@@ -26,38 +26,38 @@
  *
  * @package    terms-per-product
  */
-if ( ! defined( 'PLUGIN_VERSION' ) ) {
+if ( ! defined( 'TACPP4_LUGIN_VERSION' ) ) {
 	/**
 	 * The version of the plugin.
 	 */
-	define( 'PLUGIN_VERSION', '1.0.0' );
+	define( 'TACPP4_PLUGIN_VERSION', '1.0.0' );
 }
 
-if ( ! defined( 'PLUGIN_PATH' ) ) {
+if ( ! defined( 'TACPP4_PLUGIN_PATH' ) ) {
 	/**
 	 *  The server file system path to the plugin directory.
 	 */
-	define( 'PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
+	define( 'TACPP4_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 }
 
-if ( ! defined( 'PLUGIN_URL' ) ) {
+if ( ! defined( 'TACPP4_PLUGIN_URL' ) ) {
 	/**
 	 * The url to the plugin directory.
 	 */
-	define( 'PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+	define( 'TACPP4_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 }
 
-if ( ! defined( 'PLUGIN_BASE_NAME' ) ) {
+if ( ! defined( 'TACPP4_PLUGIN_BASE_NAME' ) ) {
 	/**
 	 * The url to the plugin directory.
 	 */
-	define( 'PLUGIN_BASE_NAME', plugin_basename( __FILE__ ) );
+	define( 'TACPP4_PLUGIN_BASE_NAME', plugin_basename( __FILE__ ) );
 }
 
 /**
  * Include files.
  */
-function gkco_include_plugin_files() {
+function tacpp_include_extra_plugin_files() {
 
 	// Include Class files
 	$files = array(
@@ -75,10 +75,10 @@ function gkco_include_plugin_files() {
 	foreach ( $files as $file ) {
 
 		// Include functions file.
-		require PLUGIN_PATH . $file . '.php';
+		require TACPP4_PLUGIN_PATH . $file . '.php';
 
 	}
 
 }
 
-add_action( 'plugins_loaded', 'gkco_include_plugin_files' );
+add_action( 'plugins_loaded', 'tacpp_include_extra_plugin_files' );
