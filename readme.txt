@@ -1,8 +1,8 @@
 === Terms & Conditions Per Product ===
-Contributors: giannis4
+Contributors: giannis4, rbraffin
 Tags: terms, conditions, WC, product
 Requires at least: 5.0
-Tested up to: 5.4.1
+Tested up to: 5.7.2
 Requires PHP: 5.6
 Stable tag: trunk
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=J7GGEGDD4XV5
@@ -39,7 +39,23 @@ There are no FAQ just yet.
 
 == Changelog ==
 
-= 1.0 =
+= 1.0.5 =
+* Fixed an issue for variable products
+* Moved the Custom terms and conditions field from "General" to "Advanced" product tab. 
+
+= 1.0.4 =
+* Add extra translation features and extra filters
+
+= 1.0.3 =
+* Remove custom fields from external product types
+
+= 1.0.2 =
+* Fix missing style
+
+= 1.0.1 =
+* Links updates
+
+= 1.0.0 =
 * First Edition release
 
 == Upgrade Notice ==

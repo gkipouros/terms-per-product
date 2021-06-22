@@ -4,17 +4,17 @@
  *
  * This plugin allows you to set custom Terms and Conditions per WooCommerce product.
  *
- * @link              https://2squared.io
- * @since             1.0.0
+ * @link              https://gianniskipouros.com
+ * @since             1.0.1
  * @package           terms-per-product
  *
  * @wordpress-plugin
  * Plugin Name:       Terms and Conditions Per Product
- * Plugin URI:        https://2squared.io
+ * Plugin URI:        https://gianniskipouros.com
  * Description:       This plugin allows you to set custom Terms and Conditions per WooCommerce product.
- * Version:           1.0.0
- * Author:            2Squared.io
- * Author URI:        https://2squared.io/giannis-kipouros
+ * Version:           1.0.5
+ * Author:            Giannis Kipouros
+ * Author URI:        https://gianniskipouros.com
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:       terms-per-product
@@ -30,7 +30,7 @@ if ( ! defined( 'TACPP4_LUGIN_VERSION' ) ) {
 	/**
 	 * The version of the plugin.
 	 */
-	define( 'TACPP4_PLUGIN_VERSION', '1.0.0' );
+	define( 'TACPP4_PLUGIN_VERSION', '1.0.5' );
 }
 
 if ( ! defined( 'TACPP4_PLUGIN_PATH' ) ) {
